@@ -2,27 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-blue hover:bg-brand-navy text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-lg;
+    @apply bg-brand-blue hover:bg-brand-navy text-white font-bold py-3.5 px-8 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-sm tracking-wide;
   }
   .btn-whatsapp {
-    @apply bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-lg flex items-center gap-3 justify-center;
+    @apply bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-8 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-sm flex items-center gap-2.5 justify-center tracking-wide;
   }
   .section-title {
-    @apply text-3xl md:text-4xl font-bold text-brand-navy;
+    @apply text-3xl md:text-4xl font-extrabold text-brand-navy leading-tight;
   }
   .card {
-    @apply bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-100;
+    @apply bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100 hover:border-brand-blue/20;
   }
 }
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.anim-d1 { animation-delay: 80ms; }
+.anim-d2 { animation-delay: 180ms; }
+.anim-d3 { animation-delay: 280ms; }
+.anim-d4 { animation-delay: 380ms; }
+.anim-d5 { animation-delay: 480ms; }
+.anim-d6 { animation-delay: 580ms; }

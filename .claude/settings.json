@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(docker compose *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(gh *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git reset *)",
+      "Bash(docker compose down *)",
+      "Bash(rm *)"
+    ],
+    "deny": [
+      "Read(.env.local)",
+      "Read(.env)"
+    ]
+  },
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "autoMemoryEnabled": true,
+  "includeGitInstructions": true
+}
