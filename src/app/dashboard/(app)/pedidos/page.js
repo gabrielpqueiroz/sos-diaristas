@@ -462,13 +462,35 @@ function OrderCard({ order, columns, diaristas, onUpdate, formatPhone, onDragSta
         </div>
       )}
 
-      {/* Value + Diarista row */}
-      <div className="flex items-center justify-between mb-1">
+      {/* Value + Payment + WhatsApp row */}
+      <div className="flex items-center gap-1.5 mb-1">
         {order.value ? (
           <span className="text-xs font-bold text-emerald-400">R$ {parseFloat(order.value).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</span>
         ) : (
           <span className="text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>Sem valor</span>
         )}
+
+        {/* Payment status badge */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            const next = order.payment_status === 'pago' ? 'pendente' : 'pago'
+            onUpdate({ payment_status: next })
+          }}
+          className="text-xs px-1.5 py-0.5 rounded-full transition-all"
+          style={{
+            background: order.payment_status === 'pago' ? 'rgba(16,185,129,0.12)' : 'rgba(245,158,11,0.12)',
+            color: order.payment_status === 'pago' ? '#34d399' : '#fbbf24',
+            border: `1px solid ${order.payment_status === 'pago' ? 'rgba(16,185,129,0.25)' : 'rgba(245,158,11,0.25)'}`,
+            fontSize: '10px',
+            fontWeight: 600,
+          }}
+          title="Clique para alternar pagamento"
+        >
+          {order.payment_status === 'pago' ? 'Pago ✓' : 'Pgto pendente'}
+        </button>
+
+        <div className="flex-1" />
 
         {/* WhatsApp mini button */}
         {order.contact_phone && (
