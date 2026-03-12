@@ -1,46 +1,35 @@
 ---
 paths:
-  - "dashboard/**"
+  - "src/app/dashboard/**"
 ---
 
-# Regras — Dashboard Admin (Next.js + TypeScript)
+# Regras — Dashboard Admin (Next.js + JavaScript)
 
-## Linguagem e Tipagem
-- TypeScript strict — nunca usar `any`, preferir tipos explícitos ou `unknown`
-- Tipos de domínio em `src/types/` — reutilizar entre componentes e chamadas de API
-- Interfaces para props de componentes — sempre tipar, nunca inferir implicitamente
+## Linguagem
+- JavaScript (sem TypeScript)
+- Sem shadcn/ui — componentes customizados com Tailwind inline
+- Sem React Query — fetch direto nos componentes com useEffect/useCallback
 
 ## Componentes e UI
-- Componentes shadcn/ui para tudo que o shadcn já resolve: botões, tabelas, modais, badges, inputs, dropdowns
-- Nunca criar componente do zero se o shadcn tem equivalente
-- Componentes de negócio em `src/components/` — nomes em PascalCase descritivos (`KpiCard`, `CampaignTable`)
-- Gráficos exclusivamente via Recharts — sem Chart.js, sem outros
-- Estados de loading: sempre usar Skeleton (shadcn) enquanto dados carregam — nunca tela em branco
-- Estados de erro: sempre exibir mensagem clara com opção de retry
-- Estados vazios: sempre exibir mensagem descritiva — nunca lista vazia sem explicação
+- Estilos compartilhados em `src/app/dashboard/_components/styles.js` (GLASS, BG_GRADIENT, STATUS_COLORS)
+- Ícones SVG em `src/app/dashboard/_components/icons.js`
+- Estados de loading: spinner animado enquanto dados carregam
+- Estados vazios: sempre mensagem descritiva
+- A usuária principal é uma senhora — fontes grandes (text-sm mínimo), botões claros com texto descritivo
 
-## Design System (herdar da landing)
-- Mesmas cores: `brand.blue #1B5FA8`, `brand.navy #1A3A6B`, `brand.light #E8F1FB`
-- Sidebar: fundo `brand.navy`, texto branco, item ativo com `brand.blue`
-- Background do dashboard: `#F8FAFC` (cinza muito claro)
-- Indicadores positivos: `#16A34A` (verde) — CPL caindo, leads subindo
-- Indicadores negativos: `#DC2626` (vermelho) — gasto alto, CTR baixo
-- Fonte: Inter — mesma da landing
+## Design System
+- Tema escuro com glassmorphism
+- Cores: `brand.blue #1B5FA8`, `brand.navy #1A3A6B`
+- Cards: usar constante `GLASS` de styles.js
+- Background: usar `BG_GRADIENT` de styles.js
+- Fonte: Inter (Google Fonts)
 
-## Arquitetura de Estado e Dados
-- Todas as chamadas de API via `src/lib/api.ts` — nunca `fetch()` direto em componente
-- `api.ts` deve incluir o header `Authorization: Bearer {token}` automaticamente
-- Estado de auth via Context API ou Zustand — nunca localStorage direto nos componentes
-- React Query (TanStack Query) para cache e refetch de dados do servidor
-- Formulários via React Hook Form + Zod para validação
+## Padrões de Dados
+- Fetch direto com `fetch('/api/dashboard/...')` nos componentes
+- Auto-refresh: Hoje (20s), Pedidos (30s) via setInterval
+- Auth: localStorage (`sos-auth`) verificado no layout
 
-## Roteamento e Proteção
-- Rotas autenticadas agrupadas em `(dashboard)/` com layout que verifica JWT
-- Redirect para `/login` se token inválido ou expirado — middleware Next.js
-- Rota `/login` é a única pública — todo o resto exige auth
-
-## Nomenclatura de Arquivos
-- Páginas: `page.tsx` dentro da pasta da rota
-- Layouts: `layout.tsx`
-- Componentes reutilizáveis: `kebab-case.tsx` ou `PascalCase.tsx`
-- Hooks customizados: `use-nome.ts` em `src/hooks/`
+## Nomenclatura
+- Páginas: `page.js` dentro da pasta da rota
+- Layout: `layout.js`
+- Rotas agrupadas em `(app)/` com sidebar

@@ -1,50 +1,49 @@
 ---
 paths:
-  - "api/app/models/**"
-  - "api/alembic/**"
-  - "api/app/database.py"
+  - "src/lib/db.js"
+  - "src/app/api/**"
 ---
 
-# Regras — Banco de Dados (PostgreSQL + SQLAlchemy + Alembic)
+# Regras — Banco de Dados (PostgreSQL via pg)
 
-## SQLAlchemy Models
-- Todos os models herdam de `Base` declarativo definido em `app/database.py`
-- PKs sempre UUID: `Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)`
-- Timestamps: `created_at` com `server_default=func.now()`, `updated_at` com `onupdate=func.now()`
-- Relacionamentos com `lazy="selectin"` — evitar N+1 queries implícitas
-- `__tablename__` sempre em snake_case no plural: `users`, `ad_accounts`, `campaign_metrics`
+## Conexão
+- Pool em `src/lib/db.js` usando `pg.Pool` com `DATABASE_URL`
+- Função `query(text, params)` para todas as queries
 
-## Alembic — Workflow obrigatório
+## Schema atual
+
+```sql
+crm_contacts (
+  id UUID PK, session_id TEXT, name TEXT, phone TEXT, email TEXT,
+  address TEXT, neighborhood TEXT, city TEXT,
+  status TEXT, is_recurring BOOLEAN, total_orders INT, total_revenue NUMERIC,
+  last_contact_at TIMESTAMP, created_at TIMESTAMP, updated_at TIMESTAMP
+)
+
+crm_orders (
+  id UUID PK, contact_id UUID FK, session_id TEXT,
+  service_type TEXT, status TEXT,
+  scheduled_date DATE, scheduled_time TIME,
+  address TEXT, diarista_id UUID FK, value NUMERIC,
+  payment_status TEXT, notes TEXT,
+  created_at TIMESTAMP, updated_at TIMESTAMP
+)
+
+crm_diaristas (
+  id UUID PK, name TEXT, phone TEXT, specialties TEXT,
+  status TEXT, notes TEXT,
+  created_at TIMESTAMP, updated_at TIMESTAMP
+)
+
+n8n_chat_histories (
+  id SERIAL PK, session_id TEXT,
+  message JSONB, type TEXT,
+  created_at TIMESTAMP
+)
 ```
-# Sempre nesta ordem:
-1. Alterar o model SQLAlchemy
-2. alembic revision --autogenerate -m "descricao_curta"
-3. Revisar o arquivo gerado em alembic/versions/ — corrigir se necessário
-4. alembic upgrade head
-```
-- Nunca alterar banco diretamente via SQL em produção — apenas via migration
-- Migrations devem ser reversíveis: sempre implementar `downgrade()` funcional
-- Nomear migrations descritivamente: `add_frequency_to_campaign_metrics`, não `auto_001`
 
-## Queries Assíncronas
-- Sempre usar `AsyncSession` — nunca `Session` síncrono
-- Pattern padrão de query:
-  ```python
-  result = await session.execute(select(Model).where(Model.id == id))
-  obj = result.scalar_one_or_none()
-  ```
-- Bulk insert com `session.add_all()` + `await session.commit()`
-- Upsert de métricas: `insert(...).on_conflict_do_update(index_elements=['campaign_id', 'date'], set_=...)`
-
-## Índices e Performance
-- Índice obrigatório em `campaign_metrics(campaign_id, date)` — é a query mais frequente
-- Índice em `campaigns(ad_account_id)` — listagem de campanhas por conta
-- Para queries de período: `campaign_metrics.date BETWEEN :start AND :end` — nunca filtrar em Python após buscar tudo
-- Evitar `SELECT *` — especificar colunas nas queries críticas
-
-## Convenções de Schema
-- `campaign_metrics`: constraint `UNIQUE(campaign_id, date)` — uma linha por campanha por dia
-- `ad_accounts.access_token`: tipo `TEXT` — tokens da Meta podem ser longos (~200 chars)
-- Valores monetários: `NUMERIC(12,2)` — nunca `FLOAT` (problema de precisão com dinheiro)
-- Taxas e percentuais: `NUMERIC(8,4)` — ex: CTR `0.0234` = 2,34%
-- Status de campanha: `VARCHAR` com valores `ACTIVE | PAUSED | ARCHIVED | DELETED`
+## Convenções
+- Queries parametrizadas ($1, $2...) — nunca interpolação de string
+- COALESCE para valores opcionais
+- Cast `::text` em DATE/TIME quando comparar com strings
+- Sem ORM, sem migrations — alterações diretas no banco
