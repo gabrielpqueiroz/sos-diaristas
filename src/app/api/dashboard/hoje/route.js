@@ -14,7 +14,7 @@ export async function GET() {
        FROM crm_orders o
        LEFT JOIN crm_contacts c ON c.id = o.contact_id
        LEFT JOIN crm_diaristas d ON d.id = o.diarista_id
-       WHERE o.scheduled_date = $1
+       WHERE o.scheduled_date::text = $1
        ORDER BY o.scheduled_time ASC NULLS LAST, o.created_at ASC`,
       [today]
     )
@@ -31,7 +31,7 @@ export async function GET() {
        FROM crm_orders o
        LEFT JOIN crm_contacts c ON c.id = o.contact_id
        LEFT JOIN crm_diaristas d ON d.id = o.diarista_id
-       WHERE o.scheduled_date = $1
+       WHERE o.scheduled_date::text = $1
        ORDER BY o.scheduled_time ASC NULLS LAST`,
       [tomorrowStr]
     )
@@ -39,8 +39,8 @@ export async function GET() {
     // Diaristas with their today's workload
     const diaristas = await query(`
       SELECT d.*,
-        (SELECT count(*) FROM crm_orders o WHERE o.diarista_id = d.id AND o.scheduled_date = $1) as orders_today,
-        (SELECT string_agg(o.scheduled_time, ', ' ORDER BY o.scheduled_time) FROM crm_orders o WHERE o.diarista_id = d.id AND o.scheduled_date = $1 AND o.scheduled_time IS NOT NULL) as times_today
+        (SELECT count(*) FROM crm_orders o WHERE o.diarista_id = d.id AND o.scheduled_date::text = $1) as orders_today,
+        (SELECT string_agg(o.scheduled_time::text, ', ' ORDER BY o.scheduled_time) FROM crm_orders o WHERE o.diarista_id = d.id AND o.scheduled_date::text = $1 AND o.scheduled_time IS NOT NULL) as times_today
       FROM crm_diaristas d
       WHERE d.status = 'ativa'
       ORDER BY d.name
@@ -59,7 +59,7 @@ export async function GET() {
         count(*) FILTER (WHERE payment_status = 'pago') as pagos,
         count(*) FILTER (WHERE payment_status = 'pendente' OR payment_status IS NULL) as pagamento_pendente
       FROM crm_orders
-      WHERE scheduled_date = $1
+      WHERE scheduled_date::text = $1
     `, [today])
 
     return NextResponse.json({
@@ -71,7 +71,7 @@ export async function GET() {
       tomorrow: tomorrowStr,
     })
   } catch (error) {
-    console.error('Error fetching hoje:', error)
-    return NextResponse.json({ error: 'Erro ao buscar dados de hoje' }, { status: 500 })
+    console.error('Error fetching hoje:', error.message, error.stack)
+    return NextResponse.json({ error: 'Erro ao buscar dados de hoje', detail: error.message }, { status: 500 })
   }
 }

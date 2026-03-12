@@ -8,8 +8,8 @@ import { SunIcon, GridIcon, UsersIcon, ClipboardIcon, CalendarIcon, SparklesIcon
 import { BG_GRADIENT } from '../_components/styles'
 
 const navItems = [
-  { id: 'hoje', label: 'Hoje', href: '/dashboard/hoje', icon: <SunIcon /> },
-  { id: 'overview', label: 'Visão Geral', href: '/dashboard', icon: <GridIcon /> },
+  { id: 'hoje', label: 'Hoje', href: '/dashboard', icon: <SunIcon /> },
+  { id: 'overview', label: 'Visão Geral', href: '/dashboard/visao-geral', icon: <GridIcon /> },
   { id: 'contatos', label: 'Contatos', href: '/dashboard/contatos', icon: <UsersIcon /> },
   { id: 'pedidos', label: 'Pedidos', href: '/dashboard/pedidos', icon: <ClipboardIcon /> },
   { id: 'calendario', label: 'Calendário', href: '/dashboard/calendario', icon: <CalendarIcon /> },
