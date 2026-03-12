@@ -15,7 +15,7 @@ export async function PATCH(request, { params }) {
     for (const field of fields) {
       if (body[field] !== undefined) {
         updates.push(`${field} = $${idx++}`)
-        values.push(body[field] || null)
+        values.push(body[field] === '' ? null : body[field])
       }
     }
 

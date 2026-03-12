@@ -29,7 +29,8 @@ export async function POST(request) {
     )
     return NextResponse.json({ diarista: result.rows[0] })
   } catch (error) {
-    return NextResponse.json({ error: 'Erro ao criar diarista' }, { status: 500 })
+    console.error('Error creating diarista:', error)
+    return NextResponse.json({ error: 'Erro ao criar diarista', detail: error.message }, { status: 500 })
   }
 }
 
@@ -52,17 +53,29 @@ export async function PATCH(request) {
     )
     return NextResponse.json({ diarista: result.rows[0] })
   } catch (error) {
-    return NextResponse.json({ error: 'Erro ao atualizar diarista' }, { status: 500 })
+    console.error('Error updating diarista:', error)
+    return NextResponse.json({ error: 'Erro ao atualizar diarista', detail: error.message }, { status: 500 })
   }
 }
 
-// DELETE /api/dashboard/diaristas
+// DELETE /api/dashboard/diaristas?id=xxx
 export async function DELETE(request) {
   try {
-    const { id } = await request.json()
+    let id
+    // Suportar tanto query param quanto body
+    const { searchParams } = new URL(request.url)
+    id = searchParams.get('id')
+    if (!id) {
+      try {
+        const body = await request.json()
+        id = body.id
+      } catch (e) {}
+    }
+    if (!id) return NextResponse.json({ error: 'ID obrigatório' }, { status: 400 })
     await query('DELETE FROM crm_diaristas WHERE id = $1', [id])
     return NextResponse.json({ ok: true })
   } catch (error) {
-    return NextResponse.json({ error: 'Erro ao excluir diarista' }, { status: 500 })
+    console.error('Error deleting diarista:', error)
+    return NextResponse.json({ error: 'Erro ao excluir diarista', detail: error.message }, { status: 500 })
   }
 }

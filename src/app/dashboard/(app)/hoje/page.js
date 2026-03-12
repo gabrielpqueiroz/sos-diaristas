@@ -64,7 +64,9 @@ export default function HojePage() {
   }
 
   function formatDate(d) {
-    return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
+    if (!d) return '—'
+    const str = typeof d === 'string' ? d.split('T')[0] : new Date(d).toISOString().split('T')[0]
+    return new Date(str + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
   }
 
   if (loading || !data) {

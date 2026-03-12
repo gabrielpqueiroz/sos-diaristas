@@ -50,23 +50,22 @@ export default function DiaristasPage() {
     if (!form.name.trim()) return
     setSaving(true)
     try {
-      if (editingId) {
-        await fetch('/api/dashboard/diaristas', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editingId, ...form }),
-        })
-      } else {
-        await fetch('/api/dashboard/diaristas', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form),
-        })
+      const res = await fetch('/api/dashboard/diaristas', {
+        method: editingId ? 'PATCH' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingId ? { id: editingId, ...form } : form),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        alert(`Erro: ${data.detail || data.error || 'Falha ao salvar'}`)
+        setSaving(false)
+        return
       }
       setShowModal(false)
       fetchDiaristas()
     } catch (e) {
       console.error(e)
+      alert('Erro de conexão ao salvar diarista')
     } finally {
       setSaving(false)
     }
@@ -84,12 +83,18 @@ export default function DiaristasPage() {
 
   async function handleDelete(d) {
     if (!confirm(`Deseja realmente excluir "${d.name}"?`)) return
-    await fetch('/api/dashboard/diaristas', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: d.id }),
-    })
-    fetchDiaristas()
+    try {
+      const res = await fetch(`/api/dashboard/diaristas?id=${d.id}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (!res.ok) {
+        alert(`Erro: ${data.detail || data.error}`)
+        return
+      }
+      fetchDiaristas()
+    } catch (e) {
+      console.error(e)
+      alert('Erro ao excluir diarista')
+    }
   }
 
   const filtered = diaristas.filter(d => {

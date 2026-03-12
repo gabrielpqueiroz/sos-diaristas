@@ -56,13 +56,16 @@ export async function GET(request) {
       LIMIT 90
     `)
 
-    // Today's conversations
+    // Today's stats - orders scheduled for today
+    const todayDate = new Date().toISOString().split('T')[0]
     const today = await query(`
-      SELECT count(DISTINCT session_id) as atendimentos_hoje
-      FROM n8n_chat_histories
-      WHERE message->>'content' LIKE '%Dia e Hora%'
-      AND message->>'content' LIKE '%${new Date().toISOString().split('T')[0]}%'
-    `)
+      SELECT
+        count(*) as atendimentos_hoje,
+        count(*) FILTER (WHERE status = 'concluido') as concluidos_hoje,
+        count(*) FILTER (WHERE status IN ('agendado','confirmado','diarista_atribuida','em_andamento')) as pendentes_hoje
+      FROM crm_orders
+      WHERE scheduled_date = $1
+    `, [todayDate])
 
     // Order stats
     const orderStats = await query(`

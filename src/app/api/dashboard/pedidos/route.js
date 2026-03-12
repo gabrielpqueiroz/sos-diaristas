@@ -41,7 +41,7 @@ export async function GET(request) {
            WHEN 'concluido' THEN 6
            WHEN 'cancelado' THEN 7
          END,
-         o.scheduled_date ASC NULLS LAST,
+         o.scheduled_date::text ASC NULLS LAST,
          o.created_at DESC
        LIMIT $${idx++} OFFSET $${idx++}`,
       [...params, limit, offset]

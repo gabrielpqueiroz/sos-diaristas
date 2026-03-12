@@ -38,6 +38,9 @@ export default function PedidosPage() {
   const [saving, setSaving] = useState(false)
   const [draggedOrderId, setDraggedOrderId] = useState(null)
   const [dragOverCol, setDragOverCol] = useState(null)
+  const [editOrder, setEditOrder] = useState(null)
+  const [editForm, setEditForm] = useState({})
+  const [editSaving, setEditSaving] = useState(false)
   const refreshTimerRef = useRef(null)
 
   const loadData = useCallback(async (silent = false) => {
@@ -157,6 +160,42 @@ export default function PedidosPage() {
       }
     }
     setDraggedOrderId(null)
+  }
+
+  function openEditOrder(order) {
+    const dateStr = order.scheduled_date ? (typeof order.scheduled_date === 'string' ? order.scheduled_date.split('T')[0] : new Date(order.scheduled_date).toISOString().split('T')[0]) : ''
+    const timeStr = order.scheduled_time ? String(order.scheduled_time).substring(0, 5) : ''
+    setEditForm({
+      service_type: order.service_type || '',
+      scheduled_date: dateStr,
+      scheduled_time: timeStr,
+      address: order.address || '',
+      value: order.value ? String(order.value) : '',
+      notes: order.notes || '',
+      diarista_id: order.diarista_id || '',
+      status: order.status || 'pendente',
+      payment_status: order.payment_status || 'pendente',
+    })
+    setEditOrder(order)
+  }
+
+  async function saveEditOrder() {
+    if (!editOrder) return
+    setEditSaving(true)
+    try {
+      await fetch(`/api/dashboard/pedidos/${editOrder.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...editForm,
+          value: editForm.value ? parseFloat(editForm.value) : null,
+          diarista_id: editForm.diarista_id || null,
+        }),
+      })
+      setEditOrder(null)
+      loadData()
+    } catch (e) { console.error(e) }
+    setEditSaving(false)
   }
 
   // When selecting hours in the modal, auto-fill price
@@ -330,6 +369,143 @@ export default function PedidosPage() {
           </div>
         )}
 
+        {/* Edit Order Modal */}
+        {editOrder && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+            onClick={() => setEditOrder(null)}>
+            <div className="w-full max-w-md rounded-2xl p-6 mx-4 max-h-[90vh] overflow-y-auto" style={{ ...GLASS, background: 'rgba(15,17,25,0.95)', border: '1px solid rgba(255,255,255,0.1)' }}
+              onClick={e => e.stopPropagation()}>
+              <h2 className="text-white font-bold text-base mb-1">Editar Pedido</h2>
+              <p className="text-xs mb-5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                {editOrder.contact_name || 'Sem nome'} {editOrder.contact_phone ? `· ${formatPhone(editOrder.contact_phone)}` : ''}
+              </p>
+
+              {/* Status */}
+              <div className="mb-3">
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Status</label>
+                <select value={editForm.status}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, status: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg text-xs text-white outline-none"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  {ORDER_COLUMNS.map(c => (
+                    <option key={c.id} value={c.id} style={{ background: '#1a1a2e' }}>{c.label}</option>
+                  ))}
+                  <option value="cancelado" style={{ background: '#1a1a2e' }}>Cancelado</option>
+                </select>
+              </div>
+
+              {/* Hours selector */}
+              <div className="mb-3">
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Horas de Serviço</label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {HOURS_PRICING.map(hp => {
+                    const selected = editForm.service_type === `Limpeza ${hp.hours}h`
+                    return (
+                      <button key={hp.hours} type="button"
+                        onClick={() => setEditForm(prev => ({ ...prev, service_type: `Limpeza ${hp.hours}h`, value: String(hp.price) }))}
+                        className="px-2 py-2 rounded-lg text-xs font-medium transition-all text-center"
+                        style={{
+                          background: selected ? 'rgba(27,95,168,0.25)' : 'rgba(255,255,255,0.05)',
+                          border: selected ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(255,255,255,0.08)',
+                          color: selected ? '#60a5fa' : 'rgba(255,255,255,0.5)',
+                        }}>
+                        <span className="block font-bold" style={{ color: selected ? '#fff' : 'rgba(255,255,255,0.7)' }}>{hp.hours}h</span>
+                        <span className="block mt-0.5" style={{ fontSize: '10px' }}>R$ {hp.price}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Value */}
+              <div className="mb-3">
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Valor (R$)</label>
+                <input type="number" step="0.01" value={editForm.value}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, value: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg text-xs text-white outline-none"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Data</label>
+                  <input type="date" value={editForm.scheduled_date}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, scheduled_date: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-lg text-xs text-white outline-none"
+                    style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }} />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Horário</label>
+                  <input type="time" value={editForm.scheduled_time}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, scheduled_time: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-lg text-xs text-white outline-none"
+                    style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }} />
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Endereço</label>
+                <input type="text" value={editForm.address}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, address: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg text-xs text-white outline-none"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }} />
+              </div>
+
+              {/* Diarista */}
+              <div className="mb-3">
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Diarista</label>
+                <select value={editForm.diarista_id || ''}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, diarista_id: e.target.value || null }))}
+                  className="w-full px-3 py-2 rounded-lg text-xs text-white outline-none"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <option value="" style={{ background: '#1a1a2e' }}>Sem diarista</option>
+                  {diaristas.filter(d => d.status === 'ativa').map(d => (
+                    <option key={d.id} value={d.id} style={{ background: '#1a1a2e' }}>{d.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Payment */}
+              <div className="mb-3">
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Pagamento</label>
+                <div className="flex gap-2">
+                  {['pendente', 'parcial', 'pago'].map(ps => (
+                    <button key={ps} type="button"
+                      onClick={() => setEditForm(prev => ({ ...prev, payment_status: ps }))}
+                      className="flex-1 px-3 py-2 rounded-lg text-xs font-medium transition-all"
+                      style={{
+                        background: editForm.payment_status === ps ? (ps === 'pago' ? 'rgba(16,185,129,0.2)' : ps === 'parcial' ? 'rgba(249,115,22,0.2)' : 'rgba(245,158,11,0.2)') : 'rgba(255,255,255,0.05)',
+                        color: editForm.payment_status === ps ? (ps === 'pago' ? '#34d399' : ps === 'parcial' ? '#fb923c' : '#fbbf24') : 'rgba(255,255,255,0.4)',
+                        border: editForm.payment_status === ps ? `1px solid ${ps === 'pago' ? 'rgba(16,185,129,0.4)' : ps === 'parcial' ? 'rgba(249,115,22,0.4)' : 'rgba(245,158,11,0.4)'}` : '1px solid rgba(255,255,255,0.08)',
+                      }}>
+                      {ps === 'pago' ? 'Pago' : ps === 'parcial' ? 'Parcial' : 'Pendente'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-5">
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>Observações</label>
+                <textarea value={editForm.notes} onChange={(e) => setEditForm(prev => ({ ...prev, notes: e.target.value }))}
+                  rows={2} className="w-full px-3 py-2 rounded-lg text-xs text-white outline-none resize-none"
+                  style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)' }} />
+              </div>
+
+              <div className="flex gap-2">
+                <button onClick={() => setEditOrder(null)} className="flex-1 py-2.5 rounded-xl text-xs font-medium"
+                  style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)' }}>
+                  Cancelar
+                </button>
+                <button onClick={saveEditOrder} disabled={editSaving}
+                  className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white disabled:opacity-40"
+                  style={{ background: 'linear-gradient(135deg, #1B5FA8, #2b7fd4)' }}>
+                  {editSaving ? 'Salvando...' : 'Salvar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
@@ -378,6 +554,7 @@ export default function PedidosPage() {
                         formatPhone={formatPhone}
                         onDragStart={(e) => handleDragStart(e, order.id)}
                         onDragEnd={handleDragEnd}
+                        onEdit={openEditOrder}
                       />
                     ))}
 
@@ -406,7 +583,20 @@ export default function PedidosPage() {
   }
 }
 
-function OrderCard({ order, columns, diaristas, onUpdate, formatPhone, onDragStart, onDragEnd }) {
+function safeFormatDate(dateVal) {
+  if (!dateVal) return '—'
+  const str = typeof dateVal === 'string' ? dateVal.split('T')[0] : new Date(dateVal).toISOString().split('T')[0]
+  const [y, m, d] = str.split('-')
+  return `${d}/${m}`
+}
+
+function safeFormatTime(timeVal) {
+  if (!timeVal) return ''
+  const str = String(timeVal)
+  return str.substring(0, 5)
+}
+
+function OrderCard({ order, columns, diaristas, onUpdate, formatPhone, onDragStart, onDragEnd, onEdit }) {
   const [expanded, setExpanded] = useState(false)
   const [showDiaristaSelect, setShowDiaristaSelect] = useState(false)
   const col = columns.find(c => c.id === order.status) || columns[0]
@@ -429,15 +619,25 @@ function OrderCard({ order, columns, diaristas, onUpdate, formatPhone, onDragSta
       onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)' }}
       onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)' }}
     >
-      {/* Top: Service + Hours badge */}
+      {/* Top: Service + Hours badge + Edit */}
       <div className="flex items-start justify-between mb-1">
         <p className="text-xs font-bold text-white">{order.service_type || 'Serviço'}</p>
-        {hours && (
-          <span className="text-xs px-1.5 py-0.5 rounded-md flex-shrink-0 ml-2"
-            style={{ background: 'rgba(59,130,246,0.12)', color: '#60a5fa', fontSize: '10px', fontWeight: 700 }}>
-            {hours}h
-          </span>
-        )}
+        <div className="flex items-center gap-1">
+          {hours && (
+            <span className="text-xs px-1.5 py-0.5 rounded-md flex-shrink-0"
+              style={{ background: 'rgba(59,130,246,0.12)', color: '#60a5fa', fontSize: '10px', fontWeight: 700 }}>
+              {hours}h
+            </span>
+          )}
+          <button
+            onClick={(e) => { e.stopPropagation(); onEdit(order) }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-xs px-1.5 py-0.5 rounded-md"
+            style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)', fontSize: '10px' }}
+            title="Editar pedido"
+          >
+            Editar
+          </button>
+        </div>
       </div>
 
       {/* Contact name */}
@@ -449,8 +649,8 @@ function OrderCard({ order, columns, diaristas, onUpdate, formatPhone, onDragSta
       {order.scheduled_date && (
         <div className="flex items-center gap-1.5 mb-2 text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
           <CalendarIcon />
-          {new Date(order.scheduled_date + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
-          {order.scheduled_time && ` às ${order.scheduled_time.substring(0, 5)}`}
+          {safeFormatDate(order.scheduled_date)}
+          {order.scheduled_time && ` às ${safeFormatTime(order.scheduled_time)}`}
         </div>
       )}
 
