@@ -3,18 +3,17 @@
     "allow": [
       "Bash(npm run *)",
       "Bash(npx *)",
-      "Bash(docker compose *)",
       "Bash(git status)",
       "Bash(git diff *)",
       "Bash(git log *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(gh *)"
+      "Bash(gh *)",
+      "Bash(curl *)"
     ],
     "ask": [
       "Bash(git push *)",
       "Bash(git reset *)",
-      "Bash(docker compose down *)",
       "Bash(rm *)"
     ],
     "deny": [

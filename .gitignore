@@ -3,6 +3,7 @@
 node_modules/
 .next/
 out/
+.DS_Store
 
 # Claude Code — configurações pessoais (não subir pro GitHub)
 .claude/settings.local.json
