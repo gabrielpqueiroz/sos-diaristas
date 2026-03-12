@@ -1,103 +1,104 @@
-# PRD — SOS Diaristas: Dashboard de Análise Inteligente de Campanhas
+# PRD — SOS Diaristas: Sistema de Gestão de Diaristas
 
 ## Visão do Produto
 
-Sistema de dashboard administrativo para análise inteligente de métricas de campanhas do Meta Ads (Facebook/Instagram). Um agente de IA com comportamento de gestor de tráfego experiente analisa os dados em tempo real e entrega insights acionáveis, ajudando o gestor a tomar decisões mais rápidas e embasadas.
-
-O dashboard herda a identidade visual da landing page existente — elegante, profissional, azul-marinho — transmitindo confiança e sofisticação.
+Sistema completo para gestão de um negócio de diaristas em Foz do Iguaçu. Inclui landing page para captação de clientes, CRM para gestão de contatos, sistema de pedidos com Kanban, gestão de diaristas, calendário, relatórios e integração com WhatsApp via n8n.
 
 ---
 
 ## Problema
 
-Gestores de tráfego perdem tempo abrindo o Gerenciador de Anúncios do Meta, navegando entre campanhas, cruzando dados manualmente e tentando interpretar o que os números significam. Não há uma visão consolidada com diagnóstico automático.
+Gestão manual de agendamentos de diaristas via WhatsApp gera desorganização: pedidos perdidos, diaristas sem atribuição, pagamentos sem controle, sem visibilidade do dia a dia.
 
 ## Solução
 
-Um painel centralizado que:
-1. Busca métricas das campanhas via Meta Marketing API automaticamente
-2. Persiste os dados no PostgreSQL para análise histórica
-3. Apresenta os KPIs em cards e gráficos visuais
-4. Possui um agente LangChain que interpreta os dados e entrega insights como um gestor sênior
+1. **Landing page** — capta leads via formulário → WhatsApp
+2. **Agente IA no WhatsApp** — atende clientes via n8n, agenda serviços automaticamente
+3. **Dashboard CRM** — controla pedidos, diaristas, pagamentos e clientes em um só lugar
+4. **Página "Hoje"** — visão do dia a dia pra operação (página principal)
 
 ---
 
 ## Usuários
 
-- **Gestor de tráfego** (usuário principal) — acessa o dashboard diariamente para monitorar campanhas e receber recomendações do agente
-- **Dono do negócio** — acessa ocasionalmente para visão geral de resultado e ROI
+- **Operadora** (usuária principal) — senhora que controla o dia a dia: pedidos, diaristas, pagamentos. Precisa de UX intuitiva, fontes grandes, botões claros
+- **Gestor** (Gabriel) — acompanha relatórios, configura integrações, gerencia o sistema
 
 ---
 
-## Funcionalidades
+## Funcionalidades Implementadas
 
-### P0 — MVP obrigatório
+### Landing Page
+- Formulário de solicitação → redireciona pra WhatsApp
+- Tracking: Meta Pixel (client), Meta CAPI (server), Google Ads
 
-**Autenticação**
-- Login simples com email/senha (sem cadastro público — acesso controlado)
-- Sessão persistida via JWT
+### Dashboard — Página "Hoje" (principal)
+- Agenda do dia com todos os pedidos
+- Atribuir diarista direto no card
+- Botões: Iniciar Serviço → Concluir Serviço
+- Pagamento: Pendente / Parcial / Pago (3 botões visuais)
+- KPIs: pedidos hoje, pendentes, em andamento, concluídos, receita
+- Sidebar: diaristas do dia (disponível/ocupada) + preview de amanhã
+- Auto-refresh 20s
 
-**Conexão com Meta Ads**
-- Configuração de `access_token` e `ad_account_id` via painel de configurações
-- Suporte a múltiplas contas (ex: cliente A, cliente B)
+### Contatos (CRM)
+- Lista paginada com busca e filtros por status
+- Detalhe do contato com histórico
+- Status: novo, qualificado, agendado, cliente, inativo, perdido
 
-**Sincronização de métricas**
-- Busca automática (cron job) dos últimos 7, 14 e 30 dias
-- Métricas coletadas por campanha: impressões, cliques, CPM, CPC, CTR, conversões (leads), CPL, valor gasto, alcance, frequência, ROAS (quando disponível)
-- Breakdown por dia para gráficos de tendência
+### Pedidos (Kanban)
+- Colunas: Pendente → Agendado → Confirmado → Diarista OK → Em Andamento → Concluído
+- Drag-and-drop entre colunas
+- Modal de edição completo (data, hora, endereço, valor, diarista, pagamento)
+- Auto-refresh 30s
 
-**Dashboard principal**
-- Cards de KPIs: gasto total, leads gerados, CPL médio, CTR médio
-- Gráfico de linha: evolução diária de gasto e leads
-- Tabela de campanhas com status (ativa/pausada) e principais métricas
-- Filtro por período e por conta de anúncios
+### Calendário
+- Visualização mensal com pedidos por dia
+- Cores por status e quantidade
 
-**Agente IA (Gestor de Tráfego)**
-- Interface de chat no sidebar ou modal
-- O agente tem acesso às métricas do banco de dados via tools LangChain
-- Responde perguntas como:
-  - "Qual campanha está com CPL mais alto?"
-  - "O que está puxando o gasto para cima essa semana?"
-  - "Quais campanhas devo pausar?"
-- Entrega análise proativa diária (gerada automaticamente ao abrir o dashboard)
-- Tom: direto, técnico, como um gestor experiente — sem rodeios
+### Diaristas
+- Cadastro com nome, telefone, especialidades
+- Status: ativa, inativa, férias
+- Contagem de pedidos ativos
 
-### P1 — Segunda entrega
+### Relatórios
+- KPIs: total pedidos, concluídos, faturamento, recebido, a receber, ticket médio
+- Faturamento por dia, ranking de diaristas, serviços populares
+- Status de pagamento, conversão de contatos
+- Filtro por período: 7d, 30d, 90d, tudo
 
-- Histórico de conversas com o agente
-- Exportação de relatório em PDF com métricas + insights do agente
-- Alertas automáticos: CPL acima do limite configurado, campanha zerou orçamento
-- Comparação de períodos (semana atual vs. anterior)
+### Integração n8n (3 webhooks)
+- Criar pedido automaticamente quando IA fecha agendamento
+- Atualizar dados do contato (nome, endereço)
+- Consultar dados do cliente no CRM (IA confirma info em vez de perguntar de novo)
 
-### P2 — Futuro
+---
 
-- Suporte a Google Ads (mesma estrutura)
-- Dashboard de leads gerados via landing page (integração com CAPI)
-- Previsão de performance com base em histórico
+## Funcionalidades Pendentes
+
+### Prioridade Alta
+- **Configurações** — tabela de preços editável, dados da empresa
+- **Modo mobile** — menu hamburguer pra sidebar
+- **Notificação de novo pedido** — badge/sino no menu
+
+### Prioridade Média
+- **Histórico de atendimento** — ver conversas do WhatsApp por cliente
+- **Agenda da diarista** — ver pedidos da semana de cada uma
+- **Recorrência automática** — pedido recorrente pra clientes fixos
+- **Exportar relatórios** — PDF ou Excel
+
+### Prioridade Baixa
+- **Mapa dos pedidos** — endereços do dia pra otimizar rota
+- **Dashboard financeiro** — DRE simples
+- **Avaliação pós-serviço** — cliente avaliar a diarista
+- **Autenticação real** — trocar localStorage por JWT
 
 ---
 
 ## Regras de Negócio
 
-- O `access_token` da Meta Ads é armazenado **criptografado** no banco
-- A sincronização acontece a cada 6 horas por padrão (configurável)
-- Métricas históricas são imutáveis — novos syncs apenas inserem/atualizam o registro do dia
-- O agente nunca deve sugerir ações que violem as políticas do Meta Ads
-- Rate limits da API do Meta devem ser respeitados (delay entre requests)
-
----
-
-## Métricas de Sucesso
-
-- Tempo médio de análise diária reduzido de 30 min para menos de 5 min
-- Gestor usa o chat do agente pelo menos 1x por dia
-- 0 erros críticos de sincronização em 30 dias de operação
-
----
-
-## Fora do Escopo (v1)
-
-- Criação ou edição de campanhas pelo dashboard
-- Integração com outras plataformas (TikTok Ads, Google Ads)
-- App mobile
-- Multi-tenant (múltiplos clientes isolados — cada cliente terá sua própria instância)
+- Tabela de preços: 2h (R$125) até 10h (R$240)
+- Pagamento tem 3 estados: pendente, parcial, pago
+- Ao atribuir diarista, status do pedido muda automaticamente pra "diarista_atribuida"
+- Ao concluir pedido, status do contato muda pra "cliente"
+- Webhooks do n8n aceitam body como array ou objeto

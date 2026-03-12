@@ -2,91 +2,67 @@
 
 ## Stack de Tecnologia
 
-| Camada | Tecnologia | Justificativa |
-|---|---|---|
-| Frontend | Next.js 14 (App Router, TypeScript) | Consistência com landing page |
-| UI | Tailwind CSS + shadcn/ui | Design system elegante, acessível |
-| Gráficos | Recharts | Leve, integra bem com React |
-| Backend | FastAPI (Python 3.12) | Async, tipado, ideal para LangChain |
-| ORM | SQLAlchemy 2.0 + Alembic | Migrations declarativas, async support |
-| Banco | PostgreSQL 16 | Robusto, JSON support, timeseries-friendly |
-| Agente IA | LangChain + OpenAI GPT-4o (ou Claude 3.5 Sonnet) | Tool calling para queries no banco |
-| Meta Ads | `facebook-business` SDK (Python) | SDK oficial da Meta |
-| Auth | JWT (python-jose) + bcrypt | Stateless, simples para v1 |
-| Containerização | Docker + Docker Compose | Ambiente reproduzível |
-| Task scheduler | APScheduler (embutido no FastAPI) | Sync periódico sem infra extra |
+| Camada | Tecnologia |
+|---|---|
+| Framework | Next.js 14 (App Router) |
+| Linguagem | JavaScript (sem TypeScript) |
+| Estilização | Tailwind CSS (inline, sem shadcn) |
+| Banco | PostgreSQL 16 (VPS) |
+| Driver DB | `pg` (node-postgres) |
+| Automação | n8n (webhooks HTTP) |
+| Deploy | Vercel (auto-deploy via GitHub) |
+| Domínio | sistemasos.queirozautomacoes.com.br |
 
 ---
 
-## Estrutura de Diretórios
+## Estrutura do Projeto
 
 ```
 sos-diaristas/
-├── landing/                    ← landing page (Next.js, código atual movido aqui)
-│   ├── src/app/
-│   ├── public/
-│   └── package.json
-│
-├── dashboard/                  ← admin dashboard (Next.js 14, TypeScript)
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── (auth)/
-│   │   │   │   └── login/page.tsx
-│   │   │   ├── (dashboard)/
-│   │   │   │   ├── layout.tsx          ← sidebar + navbar
-│   │   │   │   ├── page.tsx            ← visão geral
-│   │   │   │   ├── campanhas/page.tsx  ← tabela de campanhas
-│   │   │   │   ├── agente/page.tsx     ← chat com IA
-│   │   │   │   └── configuracoes/page.tsx
-│   │   │   └── layout.tsx
-│   │   ├── components/
-│   │   │   ├── ui/             ← shadcn/ui components
-│   │   │   ├── charts/         ← Recharts wrappers
-│   │   │   ├── kpi-card.tsx
-│   │   │   └── agent-chat.tsx
-│   │   ├── lib/
-│   │   │   ├── api.ts          ← fetch wrapper para o backend
-│   │   │   └── auth.ts         ← JWT helpers
-│   │   └── types/
-│   │       └── metrics.ts
-│   └── package.json
-│
-├── api/                        ← FastAPI backend (Python)
+├── src/
 │   ├── app/
-│   │   ├── main.py             ← FastAPI app, rotas, CORS, scheduler
-│   │   ├── config.py           ← Settings (Pydantic BaseSettings)
-│   │   ├── database.py         ← engine, SessionLocal, Base
-│   │   ├── models/             ← SQLAlchemy models
-│   │   │   ├── user.py
-│   │   │   ├── ad_account.py
-│   │   │   ├── campaign.py
-│   │   │   └── metric.py
-│   │   ├── schemas/            ← Pydantic schemas (request/response)
-│   │   ├── routers/
-│   │   │   ├── auth.py
-│   │   │   ├── accounts.py
-│   │   │   ├── campaigns.py
-│   │   │   ├── metrics.py
-│   │   │   └── agent.py
-│   │   ├── services/
-│   │   │   ├── meta_ads.py     ← wrapper Meta Marketing API
-│   │   │   ├── sync.py         ← lógica de sincronização
-│   │   │   └── agent.py        ← LangChain agent setup
-│   │   └── agents/
-│   │       ├── tools.py        ← LangChain tools (queries no banco)
-│   │       └── prompts.py      ← system prompt do gestor de tráfego
-│   ├── alembic/
-│   │   └── versions/
-│   ├── alembic.ini
-│   ├── requirements.txt
-│   └── Dockerfile
-│
-├── docker-compose.yml
-├── docker-compose.override.yml ← sobreposições de dev (volumes, hot reload)
-├── .env.example
+│   │   ├── page.js                          # Landing page pública
+│   │   ├── layout.js                        # Root layout (Pixel + Google Ads)
+│   │   ├── globals.css                      # Tailwind base
+│   │   ├── api/
+│   │   │   ├── lead/route.js                # Form → Meta CAPI
+│   │   │   ├── dashboard/
+│   │   │   │   ├── stats/route.js           # KPIs gerais
+│   │   │   │   ├── contatos/route.js        # CRUD contatos
+│   │   │   │   ├── contatos/[id]/route.js
+│   │   │   │   ├── contatos/atualizar-por-telefone/route.js
+│   │   │   │   ├── pedidos/route.js         # CRUD pedidos
+│   │   │   │   ├── pedidos/[id]/route.js
+│   │   │   │   ├── diaristas/route.js       # CRUD diaristas
+│   │   │   │   ├── calendario/route.js
+│   │   │   │   ├── hoje/route.js
+│   │   │   │   └── relatorios/route.js
+│   │   │   └── webhook/
+│   │   │       ├── novo-pedido/route.js     # n8n → criar pedido
+│   │   │       └── consultar-contato/route.js # n8n → buscar cliente
+│   │   └── dashboard/
+│   │       ├── (app)/
+│   │       │   ├── page.js                  # HOJE (página principal)
+│   │       │   ├── visao-geral/page.js
+│   │       │   ├── contatos/page.js
+│   │       │   ├── contatos/[id]/page.js
+│   │       │   ├── pedidos/page.js          # Kanban
+│   │       │   ├── calendario/page.js
+│   │       │   ├── diaristas/page.js
+│   │       │   ├── relatorios/page.js
+│   │       │   └── layout.js               # Sidebar + auth
+│   │       ├── login/page.js
+│   │       └── _components/
+│   │           ├── icons.js
+│   │           └── styles.js               # GLASS, BG_GRADIENT, STATUS_COLORS
+│   └── lib/
+│       └── db.js                            # PostgreSQL pool
+├── public/                                   # Logo, imagens
 ├── CLAUDE.md
 ├── PRD.md
-└── Spec.md
+├── Spec.md
+├── package.json
+└── tailwind.config.js
 ```
 
 ---
@@ -94,232 +70,163 @@ sos-diaristas/
 ## Schema do Banco de Dados
 
 ```sql
--- Usuários do sistema
-users
-  id          UUID PK
-  email       VARCHAR UNIQUE NOT NULL
-  password    VARCHAR NOT NULL          -- bcrypt hash
-  name        VARCHAR
-  created_at  TIMESTAMP
+CREATE TABLE crm_contacts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id TEXT,                    -- telefone (identificador n8n)
+  name TEXT,
+  phone TEXT,
+  email TEXT,
+  address TEXT,
+  neighborhood TEXT,
+  city TEXT,
+  status TEXT DEFAULT 'novo',        -- novo|qualificado|agendado|cliente|inativo|perdido
+  is_recurring BOOLEAN DEFAULT false,
+  total_orders INTEGER DEFAULT 0,
+  total_revenue NUMERIC DEFAULT 0,
+  last_contact_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
 
--- Contas de anúncios conectadas
-ad_accounts
-  id              UUID PK
-  name            VARCHAR NOT NULL
-  account_id      VARCHAR NOT NULL      -- Meta: act_XXXXXXXXX
-  access_token    TEXT NOT NULL         -- criptografado com Fernet
-  created_at      TIMESTAMP
-  last_synced_at  TIMESTAMP
+CREATE TABLE crm_diaristas (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  phone TEXT,
+  specialties TEXT,                   -- separado por vírgula
+  status TEXT DEFAULT 'ativa',       -- ativa|inativa|ferias
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
 
--- Campanhas (snapshots sincronizados)
-campaigns
-  id              UUID PK
-  ad_account_id   UUID FK → ad_accounts
-  campaign_id     VARCHAR NOT NULL      -- ID da Meta
-  name            VARCHAR NOT NULL
-  status          VARCHAR               -- ACTIVE | PAUSED | ARCHIVED
-  objective       VARCHAR
-  created_at      TIMESTAMP
-  updated_at      TIMESTAMP
+CREATE TABLE crm_orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  contact_id UUID REFERENCES crm_contacts(id),
+  session_id TEXT,
+  service_type TEXT,                  -- ex: "Limpeza 5h"
+  status TEXT DEFAULT 'pendente',    -- pendente|agendado|confirmado|diarista_atribuida|em_andamento|concluido|cancelado
+  scheduled_date DATE,
+  scheduled_time TIME,
+  address TEXT,
+  diarista_id UUID REFERENCES crm_diaristas(id),
+  value NUMERIC,
+  payment_status TEXT DEFAULT 'pendente',  -- pendente|parcial|pago
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
 
--- Métricas diárias por campanha
-campaign_metrics
-  id              UUID PK
-  campaign_id     UUID FK → campaigns
-  date            DATE NOT NULL
-  impressions     BIGINT
-  reach           BIGINT
-  clicks          BIGINT
-  spend           NUMERIC(12,2)
-  cpm             NUMERIC(10,4)
-  cpc             NUMERIC(10,4)
-  ctr             NUMERIC(8,4)
-  leads           INTEGER
-  cost_per_lead   NUMERIC(10,4)
-  frequency       NUMERIC(8,4)
-  UNIQUE(campaign_id, date)
-
--- Histórico de conversas com o agente
-agent_conversations
-  id          UUID PK
-  user_id     UUID FK → users
-  messages    JSONB NOT NULL            -- array de {role, content, timestamp}
-  created_at  TIMESTAMP
-  updated_at  TIMESTAMP
+CREATE TABLE n8n_chat_histories (
+  id SERIAL PRIMARY KEY,
+  session_id TEXT,
+  message JSONB,
+  type TEXT,                          -- human|ai
+  created_at TIMESTAMP DEFAULT now()
+);
 ```
 
 ---
 
 ## API Endpoints
 
-### Auth
+### Dashboard
 ```
-POST /auth/login          → { access_token, token_type }
-POST /auth/refresh
-```
-
-### Contas de Anúncios
-```
-GET    /accounts              → lista contas
-POST   /accounts              → conecta nova conta (valida token com Meta)
-DELETE /accounts/{id}
-POST   /accounts/{id}/sync    → força sincronização manual
+GET  /api/dashboard/stats?period=7d|30d|90d      → KPIs gerais
+GET  /api/dashboard/hoje                          → Dados do dia (pedidos, diaristas, amanhã)
+GET  /api/dashboard/relatorios?periodo=7d|30d|90d|all → Dados de relatórios
+GET  /api/dashboard/calendario?month=YYYY-MM      → Pedidos por dia do mês
 ```
 
-### Campanhas e Métricas
+### Contatos
 ```
-GET /campaigns                       → lista com métricas agregadas
-GET /campaigns/{id}
-GET /campaigns/{id}/metrics?start=&end=   → série temporal
-GET /metrics/summary?period=7d|14d|30d    → KPIs consolidados
-```
-
-### Agente IA
-```
-POST /agent/chat              → { message } → { reply, sources }
-GET  /agent/daily-insight     → análise proativa do dia
-GET  /agent/conversations     → histórico
+GET    /api/dashboard/contatos?search=&status=&page=&limit=  → Lista paginada
+POST   /api/dashboard/contatos                               → Criar contato
+GET    /api/dashboard/contatos/[id]                          → Detalhe
+PATCH  /api/dashboard/contatos/[id]                          → Atualizar
+DELETE /api/dashboard/contatos/[id]                          → Excluir
+PATCH  /api/dashboard/contatos/atualizar-por-telefone        → Webhook n8n
 ```
 
----
-
-## Agente LangChain — Arquitetura
-
-### System Prompt
-O agente é instruído a se comportar como um **gestor de tráfego sênior com 10 anos de experiência** em Meta Ads para negócios locais brasileiros. Tom direto, analítico, sem rodeios. Sempre justifica insights com os números.
-
-### Tools disponíveis para o agente
-
-```python
-@tool
-def get_campaign_metrics(campaign_id: str, period_days: int) -> dict:
-    """Retorna métricas de uma campanha específica"""
-
-@tool
-def get_top_campaigns(metric: str, limit: int) -> list:
-    """Retorna top N campanhas por métrica (spend, leads, ctr, etc.)"""
-
-@tool
-def get_summary(period_days: int) -> dict:
-    """Retorna KPIs consolidados de todas as campanhas"""
-
-@tool
-def get_trend(metric: str, period_days: int) -> list:
-    """Retorna evolução diária de uma métrica"""
-
-@tool
-def compare_campaigns(campaign_ids: list[str], metric: str) -> dict:
-    """Compara métricas entre campanhas"""
+### Pedidos
+```
+GET    /api/dashboard/pedidos?status=&page=&limit=  → Lista com statusCounts
+POST   /api/dashboard/pedidos                       → Criar pedido
+PATCH  /api/dashboard/pedidos/[id]                  → Atualizar (status, pagamento, etc)
+DELETE /api/dashboard/pedidos/[id]                  → Excluir
 ```
 
-### Fluxo de uma mensagem
+### Diaristas
 ```
-User message
-    → LangChain agent (GPT-4o ou Claude Sonnet)
-    → decide quais tools chamar
-    → tools executam queries no PostgreSQL
-    → agente sintetiza os dados
-    → resposta em linguagem natural com insights
-    → frontend exibe em markdown
+GET    /api/dashboard/diaristas          → Lista com contagem de pedidos
+POST   /api/dashboard/diaristas          → Criar
+PATCH  /api/dashboard/diaristas          → Atualizar
+DELETE /api/dashboard/diaristas?id=xxx   → Excluir
+```
+
+### Webhooks (n8n)
+```
+POST /api/webhook/novo-pedido            → Cria pedido (aceita array ou objeto)
+GET  /api/webhook/consultar-contato?phone=xxx → Consulta cliente no CRM
+```
+
+### Landing Page
+```
+POST /api/lead                           → Form → Meta CAPI
 ```
 
 ---
 
-## Docker Compose
+## Tabela de Preços
 
-```yaml
-services:
-  postgres:
-    image: postgres:16-alpine
-    volumes: [postgres_data:/var/lib/postgresql/data]
-    environment:
-      POSTGRES_DB: sosdiaristas
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports: ["5432:5432"]
-
-  api:
-    build: ./api
-    environment:
-      DATABASE_URL: postgresql+asyncpg://...
-      SECRET_KEY: ${SECRET_KEY}
-      META_ENCRYPTION_KEY: ${META_ENCRYPTION_KEY}
-      OPENAI_API_KEY: ${OPENAI_API_KEY}  # ou ANTHROPIC_API_KEY
-    ports: ["8000:8000"]
-    depends_on: [postgres]
-
-  dashboard:
-    build: ./dashboard
-    environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
-    ports: ["3001:3000"]
-    depends_on: [api]
-```
+| Horas | Valor |
+|---|---|
+| 2h | R$ 125 |
+| 3h | R$ 135 |
+| 4h | R$ 145 |
+| 5h | R$ 155 |
+| 6h | R$ 180 |
+| 7h | R$ 210 |
+| 8h | R$ 220 |
+| 9h | R$ 230 |
+| 10h | R$ 240 |
 
 ---
 
-## Variáveis de Ambiente (`.env`)
+## Design System
+
+| Token | Valor |
+|---|---|
+| brand.blue | #1B5FA8 |
+| brand.navy | #1A3A6B |
+| brand.light | #E8F1FB |
+| Fonte | Inter (Google Fonts) |
+| Tema | Dark + Glassmorphism |
+| Cards | GLASS (styles.js) |
+| Background | BG_GRADIENT (styles.js) |
+
+---
+
+## Variáveis de Ambiente
 
 ```bash
-# Banco
-POSTGRES_USER=sosdiaristas
-POSTGRES_PASSWORD=...
-DATABASE_URL=postgresql+asyncpg://sosdiaristas:...@postgres:5432/sosdiaristas
+DATABASE_URL=postgresql://user:pass@host:5432/db
 
-# Auth
-SECRET_KEY=...                    # chave JWT (256 bits)
-META_ENCRYPTION_KEY=...           # Fernet key para criptografar access_tokens
-
-# IA
-OPENAI_API_KEY=...                # ou ANTHROPIC_API_KEY
-LLM_PROVIDER=openai               # openai | anthropic
-
-# Dashboard
-NEXT_PUBLIC_API_URL=http://localhost:8000
+# Landing page tracking
+NEXT_PUBLIC_META_PIXEL_ID=xxx
+META_PIXEL_ID=xxx
+META_CAPI_ACCESS_TOKEN=xxx         # NUNCA expor no browser
+NEXT_PUBLIC_GOOGLE_ADS_ID=AW-xxx
 ```
 
 ---
 
-## Design System do Dashboard
+## Integrações
 
-Herdar exatamente os tokens da landing page:
+### n8n → Sistema
+- Agente IA no WhatsApp (n8n) agenda serviços chamando webhook `novo-pedido`
+- Agente consulta dados do cliente via `consultar-contato`
+- Agente atualiza nome/endereço via `atualizar-por-telefone`
 
-```typescript
-// tailwind.config.ts (dashboard)
-colors: {
-  brand: {
-    blue:  '#1B5FA8',
-    navy:  '#1A3A6B',
-    light: '#E8F1FB',
-  }
-}
-fontFamily: { sans: ['Inter', 'sans-serif'] }
-```
-
-### Componentes visuais (shadcn/ui)
-- `Card` — KPI cards com bordas suaves e shadow-sm
-- `Table` — tabela de campanhas com ordenação
-- `Badge` — status da campanha (verde/vermelho/cinza)
-- `Dialog` / `Sheet` — configurações e detalhes
-- `Sidebar` — navegação lateral com estilo navy escuro
-
-### Paleta do dashboard
-- Background: `#F8FAFC` (cinza muito claro)
-- Sidebar: `brand.navy` (#1A3A6B) com texto branco
-- Accent: `brand.blue` (#1B5FA8)
-- Sucesso/positivo: `#16A34A`
-- Alerta/negativo: `#DC2626`
-
----
-
-## Ordem de Implementação
-
-1. **Infraestrutura** — `docker-compose.yml`, PostgreSQL, FastAPI skeleton, Alembic migrations
-2. **Auth** — login JWT, middleware de proteção de rotas
-3. **Meta Ads Service** — conexão, busca de campanhas e métricas
-4. **Sync Service** — salvar métricas no banco, cron job
-5. **API Endpoints** — accounts, campaigns, metrics
-6. **Dashboard Frontend** — layout, KPI cards, tabela, gráficos
-7. **Agente LangChain** — tools, system prompt, endpoint de chat
-8. **Chat UI** — interface de conversa no dashboard
-9. **Polish** — análise proativa diária, alertas, histórico
+### Landing → WhatsApp
+- Formulário dispara Meta CAPI server-side + Pixel client-side
+- Redireciona pra WhatsApp com mensagem pré-formatada
