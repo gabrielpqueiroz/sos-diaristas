@@ -16,7 +16,9 @@ import { query } from '@/lib/db'
 
 export async function POST(request) {
   try {
-    const body = await request.json()
+    const raw = await request.json()
+    // n8n pode enviar como array [{...}] ou objeto {...}
+    const body = Array.isArray(raw) ? raw[0] : raw
     const { phone, service_type, scheduled_date, scheduled_time, address, value, notes } = body
 
     if (!phone) {
@@ -74,7 +76,7 @@ export async function POST(request) {
       contact_id: contactId,
     })
   } catch (error) {
-    console.error('Webhook novo-pedido error:', error)
-    return NextResponse.json({ error: 'Erro ao criar pedido' }, { status: 500 })
+    console.error('Webhook novo-pedido error:', error.message, error.stack)
+    return NextResponse.json({ error: 'Erro ao criar pedido', detail: error.message }, { status: 500 })
   }
 }
