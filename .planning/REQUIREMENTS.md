@@ -50,21 +50,21 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MAPA-01 | — | Pending |
-| MAPA-02 | — | Pending |
-| MAPA-03 | — | Pending |
-| MAPA-04 | — | Pending |
-| MAPA-05 | — | Pending |
-| MAPA-06 | — | Pending |
-| INFRA-01 | — | Pending |
-| INFRA-02 | — | Pending |
-| INFRA-03 | — | Pending |
+| MAPA-01 | Phase 1 | Pending |
+| MAPA-02 | Phase 1 | Pending |
+| MAPA-06 | Phase 1 | Pending |
+| MAPA-03 | Phase 2 | Pending |
+| INFRA-01 | Phase 2 | Pending |
+| INFRA-02 | Phase 2 | Pending |
+| INFRA-03 | Phase 2 | Pending |
+| MAPA-04 | Phase 3 | Pending |
+| MAPA-05 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 9 total
-- Mapped to phases: 0
-- Unmapped: 9 ⚠️
+- Mapped to phases: 9
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-17 after initial definition*
+*Last updated: 2026-03-17 after roadmap creation*
