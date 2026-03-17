@@ -21,10 +21,10 @@ Tres fases constroem a feature de baixo para cima: primeiro o mapa renderiza cor
   2. Usuário consegue fazer zoom e pan no mapa sem a página quebrar ou recarregar
   3. Item "Mapa" aparece na sidebar do dashboard e navega para a página corretamente
   4. Mapa não quebra o build de produção (sem erros de `window is not defined` em SSR)
-**Plans**: TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 01-01: Instalar dependências (leaflet, react-leaflet), criar página /dashboard/mapa e componente MapComponent com dynamic import (ssr: false), tile CartoDB Dark Matter, icon fix, sidebar entry
+- [ ] 01-01-PLAN.md — Install Leaflet/react-leaflet, create MapComponent + mapa page, add sidebar entry
 
 ### Phase 2: Geocoding Infrastructure
 **Goal**: Endereços dos pedidos geocodificados via Nominatim, coordenadas cacheadas no banco e pins reais no mapa
