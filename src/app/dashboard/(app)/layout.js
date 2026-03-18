@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { SunIcon, GridIcon, UsersIcon, ClipboardIcon, CalendarIcon, SparklesIcon, ReportIcon, SettingsIcon, LogoutIcon } from '../_components/icons'
+import { SunIcon, GridIcon, UsersIcon, ClipboardIcon, CalendarIcon, SparklesIcon, ReportIcon, SettingsIcon, LogoutIcon, MapIcon } from '../_components/icons'
 import { BG_GRADIENT } from '../_components/styles'
 
 const navItems = [
@@ -15,6 +15,7 @@ const navItems = [
   { id: 'calendario', label: 'Calendário', href: '/dashboard/calendario', icon: <CalendarIcon /> },
   { id: 'diaristas', label: 'Diaristas', href: '/dashboard/diaristas', icon: <SparklesIcon /> },
   { id: 'relatorios', label: 'Relatórios', href: '/dashboard/relatorios', icon: <ReportIcon /> },
+  { id: 'mapa', label: 'Mapa', href: '/dashboard/mapa', icon: <MapIcon /> },
   { id: 'config', label: 'Configurações', href: '/dashboard/configuracoes', icon: <SettingsIcon /> },
 ]
 
