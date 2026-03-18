@@ -6,7 +6,7 @@ Tres fases constroem a feature de baixo para cima: primeiro o mapa renderiza cor
 
 ## Phases
 
-- [ ] **Phase 1: Map Scaffold** - Mapa de Foz do Iguaçu funcionando no dashboard com dados estáticos e entrada na sidebar
+- [x] **Phase 1: Map Scaffold** - Mapa de Foz do Iguaçu funcionando no dashboard com dados estáticos e entrada na sidebar (completed 2026-03-18)
 - [ ] **Phase 2: Geocoding Infrastructure** - Coordenadas lat/lng cacheadas no banco, backfill de pedidos históricos e pins reais no mapa
 - [ ] **Phase 3: Heatmap and Filters** - Camada de calor, filtro por período (7/30/90 dias) e feature completa para v1
 
@@ -21,7 +21,7 @@ Tres fases constroem a feature de baixo para cima: primeiro o mapa renderiza cor
   2. Usuário consegue fazer zoom e pan no mapa sem a página quebrar ou recarregar
   3. Item "Mapa" aparece na sidebar do dashboard e navega para a página corretamente
   4. Mapa não quebra o build de produção (sem erros de `window is not defined` em SSR)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 01-01-PLAN.md — Install Leaflet/react-leaflet, create MapComponent + mapa page, add sidebar entry
@@ -58,6 +58,6 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Map Scaffold | 0/1 | Not started | - |
+| 1. Map Scaffold | 1/1 | Complete   | 2026-03-18 |
 | 2. Geocoding Infrastructure | 0/2 | Not started | - |
 | 3. Heatmap and Filters | 0/1 | Not started | - |

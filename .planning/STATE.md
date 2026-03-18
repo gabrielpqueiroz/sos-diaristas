@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: planning
+stopped_at: "Completed 01-map-scaffold/01-01-PLAN.md (Tasks 1-2), awaiting checkpoint:human-verify Task 3"
+last_updated: "2026-03-18T16:40:51.769Z"
+last_activity: 2026-03-17 — Roadmap criado com 3 fases, 9/9 requisitos mapeados
+progress:
+  total_phases: 3
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
+  percent: 100
+---
+
 # Project State
 
 ## Project Reference
@@ -14,7 +30,7 @@ Plan: 0 of 1 in current phase
 Status: Ready to plan
 Last activity: 2026-03-17 — Roadmap criado com 3 fases, 9/9 requisitos mapeados
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -34,6 +50,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-map-scaffold P01 | 4min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -46,6 +63,9 @@ Recent decisions affecting current work:
 - Roadmap: Leaflet ao invés de Mapbox/Google Maps JS (open source, plugin heatmap maduro)
 - Roadmap: Cache de geocoding no banco (evita re-geocodificar, respeita rate limit)
 - Roadmap: Página própria /dashboard/mapa ao invés de embutir em Relatórios
+- [Phase 01-map-scaffold]: react-leaflet pinned to 4.2.1 (v5 requires React 19, project is React 18)
+- [Phase 01-map-scaffold]: MapComponent kept separate from page to enable ssr:false dynamic import boundary
+- [Phase 01-map-scaffold]: Mapa sidebar entry placed between Relatorios and Configuracoes to group analytical tools
 
 ### Pending Todos
 
@@ -58,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-17
-Stopped at: Roadmap criado, STATE.md e REQUIREMENTS.md atualizados — pronto para plan-phase 1
+Last session: 2026-03-18T16:40:51.766Z
+Stopped at: Completed 01-map-scaffold/01-01-PLAN.md (Tasks 1-2), awaiting checkpoint:human-verify Task 3
 Resume file: None

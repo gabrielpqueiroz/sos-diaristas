@@ -7,12 +7,12 @@
 
 ### Mapa
 
-- [ ] **MAPA-01**: Usuário pode ver mapa real de Foz do Iguaçu com tiles escuros (CartoDB Dark Matter) no dashboard
-- [ ] **MAPA-02**: Usuário pode navegar pelo mapa com zoom e pan interativo
+- [x] **MAPA-01**: Usuário pode ver mapa real de Foz do Iguaçu com tiles escuros (CartoDB Dark Matter) no dashboard
+- [x] **MAPA-02**: Usuário pode navegar pelo mapa com zoom e pan interativo
 - [ ] **MAPA-03**: Usuário pode ver pins nos endereços dos pedidos geocodificados
 - [ ] **MAPA-04**: Usuário pode ver camada de calor mostrando concentração de atendimentos
 - [ ] **MAPA-05**: Usuário pode filtrar dados do mapa por período (últimos 7, 30 ou 90 dias)
-- [ ] **MAPA-06**: Nova página "Mapa" acessível na sidebar do dashboard
+- [x] **MAPA-06**: Nova página "Mapa" acessível na sidebar do dashboard
 
 ### Infraestrutura de Geocoding
 
@@ -50,9 +50,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MAPA-01 | Phase 1 | Pending |
-| MAPA-02 | Phase 1 | Pending |
-| MAPA-06 | Phase 1 | Pending |
+| MAPA-01 | Phase 1 | Complete |
+| MAPA-02 | Phase 1 | Complete |
+| MAPA-06 | Phase 1 | Complete |
 | MAPA-03 | Phase 2 | Pending |
 | INFRA-01 | Phase 2 | Pending |
 | INFRA-02 | Phase 2 | Pending |
