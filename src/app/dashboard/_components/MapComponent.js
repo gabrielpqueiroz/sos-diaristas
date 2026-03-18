@@ -1,6 +1,6 @@
 'use client'
 
-import { MapContainer, TileLayer } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 
@@ -17,7 +17,7 @@ L.Icon.Default.mergeOptions({
 const FOZ_CENTER = [-25.5163, -54.5854]
 const DEFAULT_ZOOM = 13
 
-export default function MapComponent() {
+export default function MapComponent({ pins = [] }) {
   return (
     <MapContainer
       center={FOZ_CENTER}
@@ -31,6 +31,15 @@ export default function MapComponent() {
         subdomains="abcd"
         maxZoom={20}
       />
+      {pins.map((pin) => (
+        <Marker key={pin.id} position={[pin.lat, pin.lng]}>
+          <Popup>
+            <span style={{ color: '#1a1a2e' }}>
+              {pin.address || 'Endereco nao disponivel'}
+            </span>
+          </Popup>
+        </Marker>
+      ))}
     </MapContainer>
   )
 }
