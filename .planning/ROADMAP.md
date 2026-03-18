@@ -35,11 +35,11 @@ Plans:
   2. Usuário vê pins no mapa nos endereços geocodificados dos pedidos concluídos e agendados
   3. Pedidos com endereço não encontrado pelo geocoding não quebram o mapa — o número de endereços sem coordenada é visível na página
   4. O mesmo endereço não é re-geocodificado em chamadas subsequentes (cache funciona)
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: Migração do banco (adicionar lat, lng, geocoded_at em crm_orders), criar src/lib/geocode.js com rate limiter 1 req/s e normalização de endereço para Foz do Iguaçu
-- [ ] 02-02: Criar scripts/geocode-backfill.js (rodar localmente, processar pedidos WHERE lat IS NULL), criar GET /api/dashboard/mapa retornando coordenadas cacheadas, conectar API ao MapComponent para exibir pins reais
+- [ ] 02-01-PLAN.md — DB migration (lat, lng, geocoded_at), geocode.js library, backfill script
+- [ ] 02-02-PLAN.md — GET /api/dashboard/mapa route, MapComponent Marker pins, mapa page data wiring + failed-geocode count
 
 ### Phase 3: Heatmap and Filters
 **Goal**: Camada de heatmap com densidade de atendimentos e filtro por período tornam o mapa analiticamente útil
