@@ -57,7 +57,7 @@ completed: 2026-03-18
 - **Duration:** ~3 min
 - **Started:** 2026-03-18T17:11:46Z
 - **Completed:** 2026-03-18T17:14:38Z
-- **Tasks:** 2 auto tasks complete (Task 3 is checkpoint:human-verify awaiting user)
+- **Tasks:** 3 (2 auto + 1 checkpoint:human-verify, all complete)
 - **Files modified:** 3
 
 ## Accomplishments
@@ -72,7 +72,9 @@ Each task was committed atomically:
 1. **Task 1: Create GET /api/dashboard/mapa route and update MapComponent with Marker rendering** - `e12a787` (feat)
 2. **Task 2: Wire mapa page to fetch API data, pass pins to MapComponent, and show failed-geocode count** - `d638668` (feat)
 
-**Plan metadata:** (pending after checkpoint approval)
+3. **Task 3: Verify pins appear on map and failed-geocode count is visible** - checkpoint approved (human-verify)
+
+**Plan metadata:** `e51f77c` (docs: complete mapa API + Marker pins plan)
 
 ## Files Created/Modified
 - `src/app/api/dashboard/mapa/route.js` - New GET endpoint returning pins array plus with/without coordinate counts
@@ -95,11 +97,25 @@ None — build compiled successfully. Pre-existing static export errors (DB conn
 ## User Setup Required
 None - no external service configuration required.
 
+## Checkpoint Verification Result
+
+Task 3 checkpoint approved. Backfill ran successfully: 80/101 orders geocoded (79% match rate). Pins confirmed visible on map at Foz do Iguacu locations, popup working on click, failed-geocode count badge visible in yellow.
+
 ## Next Phase Readiness
 - Map API and frontend wiring complete — ready for Phase 3 (heatmap layer)
-- User visual verification still needed via checkpoint (Task 3) to confirm pins appear at Foz do Iguacu locations
-- Migration and backfill scripts from Plan 01 must be run before pins are visible: `node scripts/migrate-geocoding-columns.js` then `node scripts/geocode-backfill.js`
+- 80 pins geocoded and visible on map; 21 addresses failed geocoding (visible as yellow count badge)
+- Phase 2 success criteria fully met: pins visible, failed count graceful, no map remount, build passing
 
 ---
 *Phase: 02-geocoding-infrastructure*
 *Completed: 2026-03-18*
+
+## Self-Check: PASSED
+
+- FOUND: src/app/api/dashboard/mapa/route.js
+- FOUND: src/app/dashboard/_components/MapComponent.js
+- FOUND: src/app/dashboard/(app)/mapa/page.js
+- FOUND: .planning/phases/02-geocoding-infrastructure/02-02-SUMMARY.md
+- FOUND commit: e12a787 (Task 1)
+- FOUND commit: d638668 (Task 2)
+- FOUND commit: e51f77c (metadata)
