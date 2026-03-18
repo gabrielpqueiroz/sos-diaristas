@@ -24,7 +24,7 @@ Tres fases constroem a feature de baixo para cima: primeiro o mapa renderiza cor
 **Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 01-01-PLAN.md — Install Leaflet/react-leaflet, create MapComponent + mapa page, add sidebar entry
+- [x] 01-01-PLAN.md — Install Leaflet/react-leaflet, create MapComponent + mapa page, add sidebar entry
 
 ### Phase 2: Geocoding Infrastructure
 **Goal**: Endereços dos pedidos geocodificados via Nominatim, coordenadas cacheadas no banco e pins reais no mapa

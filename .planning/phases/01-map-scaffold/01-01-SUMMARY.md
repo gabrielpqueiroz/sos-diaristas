@@ -61,7 +61,7 @@ completed: 2026-03-18
 - **Duration:** ~4 min
 - **Started:** 2026-03-18T16:36:26Z
 - **Completed:** 2026-03-18T16:39:31Z
-- **Tasks:** 2 completed (Task 3 is human-verify checkpoint)
+- **Tasks:** 3 completed (2 auto + 1 human-verify checkpoint — approved)
 - **Files modified:** 5
 
 ## Accomplishments
@@ -79,7 +79,9 @@ Each task was committed atomically:
 1. **Task 1: Install Leaflet dependencies and create MapComponent + mapa page** - `a16edbd` (feat)
 2. **Task 2: Add MapIcon to icons.js and Mapa entry to sidebar navigation** - `794785f` (feat)
 
-**Plan metadata:** pending (docs commit after checkpoint)
+3. **Task 3: Verify map renders correctly in browser** - human-verify checkpoint approved by user (no code commit)
+
+**Plan metadata:** `17d9e77` (docs: complete map-scaffold plan — awaiting human-verify checkpoint)
 
 ## Files Created/Modified
 
