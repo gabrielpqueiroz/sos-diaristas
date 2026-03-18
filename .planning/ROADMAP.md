@@ -7,7 +7,7 @@ Tres fases constroem a feature de baixo para cima: primeiro o mapa renderiza cor
 ## Phases
 
 - [x] **Phase 1: Map Scaffold** - Mapa de Foz do Iguaçu funcionando no dashboard com dados estáticos e entrada na sidebar (completed 2026-03-18)
-- [ ] **Phase 2: Geocoding Infrastructure** - Coordenadas lat/lng cacheadas no banco, backfill de pedidos históricos e pins reais no mapa
+- [x] **Phase 2: Geocoding Infrastructure** - Coordenadas lat/lng cacheadas no banco, backfill de pedidos históricos e pins reais no mapa (completed 2026-03-18)
 - [ ] **Phase 3: Heatmap and Filters** - Camada de calor, filtro por período (7/30/90 dias) e feature completa para v1
 
 ## Phase Details
@@ -35,7 +35,7 @@ Plans:
   2. Usuário vê pins no mapa nos endereços geocodificados dos pedidos concluídos e agendados
   3. Pedidos com endereço não encontrado pelo geocoding não quebram o mapa — o número de endereços sem coordenada é visível na página
   4. O mesmo endereço não é re-geocodificado em chamadas subsequentes (cache funciona)
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 02-01-PLAN.md — DB migration (lat, lng, geocoded_at), geocode.js library, backfill script
@@ -59,5 +59,5 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Map Scaffold | 1/1 | Complete   | 2026-03-18 |
-| 2. Geocoding Infrastructure | 1/2 | In progress | - |
+| 2. Geocoding Infrastructure | 2/2 | Complete   | 2026-03-18 |
 | 3. Heatmap and Filters | 0/1 | Not started | - |
