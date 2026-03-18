@@ -16,8 +16,8 @@
 
 ### Infraestrutura de Geocoding
 
-- [ ] **INFRA-01**: Endereços dos pedidos são geocodificados via Nominatim (OpenStreetMap) e coordenadas lat/lng salvas no banco (cache)
-- [ ] **INFRA-02**: Pedidos existentes são geocodificados via script de backfill (respeitando rate limit de 1 req/s)
+- [x] **INFRA-01**: Endereços dos pedidos são geocodificados via Nominatim (OpenStreetMap) e coordenadas lat/lng salvas no banco (cache)
+- [x] **INFRA-02**: Pedidos existentes são geocodificados via script de backfill (respeitando rate limit de 1 req/s)
 - [ ] **INFRA-03**: Endereços não encontrados pelo geocoding são tratados graciosamente (contagem exibida, mapa não quebra)
 
 ## v2 Requirements
@@ -54,8 +54,8 @@
 | MAPA-02 | Phase 1 | Complete |
 | MAPA-06 | Phase 1 | Complete |
 | MAPA-03 | Phase 2 | Pending |
-| INFRA-01 | Phase 2 | Pending |
-| INFRA-02 | Phase 2 | Pending |
+| INFRA-01 | Phase 2 | Complete |
+| INFRA-02 | Phase 2 | Complete |
 | INFRA-03 | Phase 2 | Pending |
 | MAPA-04 | Phase 3 | Pending |
 | MAPA-05 | Phase 3 | Pending |
@@ -67,4 +67,4 @@
 
 ---
 *Requirements defined: 2026-03-17*
-*Last updated: 2026-03-17 after roadmap creation*
+*Last updated: 2026-03-18 after Phase 2 Plan 01 completion (INFRA-01, INFRA-02 complete)*

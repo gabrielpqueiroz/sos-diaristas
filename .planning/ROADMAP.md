@@ -38,7 +38,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — DB migration (lat, lng, geocoded_at), geocode.js library, backfill script
+- [x] 02-01-PLAN.md — DB migration (lat, lng, geocoded_at), geocode.js library, backfill script
 - [ ] 02-02-PLAN.md — GET /api/dashboard/mapa route, MapComponent Marker pins, mapa page data wiring + failed-geocode count
 
 ### Phase 3: Heatmap and Filters
@@ -59,5 +59,5 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Map Scaffold | 1/1 | Complete   | 2026-03-18 |
-| 2. Geocoding Infrastructure | 0/2 | Not started | - |
+| 2. Geocoding Infrastructure | 1/2 | In progress | - |
 | 3. Heatmap and Filters | 0/1 | Not started | - |

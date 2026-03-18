@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-map-scaffold/01-01-PLAN.md (all 3 tasks complete, human-verify approved)
-last_updated: "2026-03-18T16:50:25.831Z"
-last_activity: 2026-03-17 — Roadmap criado com 3 fases, 9/9 requisitos mapeados
+stopped_at: Completed 02-geocoding-infrastructure/02-01-PLAN.md (all 2 tasks complete)
+last_updated: "2026-03-18T17:09:00.000Z"
+last_activity: 2026-03-18 — Phase 2 Plan 01 complete: geocoding infrastructure (migration, geocode.js, backfill)
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  total_plans: 2
+  completed_plans: 2
   percent: 100
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Visualizar geograficamente onde estamos atendendo em Foz do Iguaçu para entender a demanda por região
-**Current focus:** Phase 1 — Map Scaffold
+**Current focus:** Phase 2 — Geocoding Infrastructure
 
 ## Current Position
 
-Phase: 1 of 3 (Map Scaffold)
-Plan: 0 of 1 in current phase
-Status: Ready to plan
-Last activity: 2026-03-17 — Roadmap criado com 3 fases, 9/9 requisitos mapeados
+Phase: 2 of 3 (Geocoding Infrastructure)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-18 — Phase 2 Plan 01 complete: DB migration + geocodeAddress() + backfill script
 
-Progress: [██████████] 100%
+Progress: [████████░░] 67%
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Progress: [██████████] 100%
 *Updated after each plan completion*
 | Phase 01-map-scaffold P01 | 4min | 2 tasks | 5 files |
 | Phase 01-map-scaffold P01 | 15min | 3 tasks | 5 files |
+| Phase 02-geocoding-infrastructure P01 | 10min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,10 @@ Recent decisions affecting current work:
 - [Phase 01-map-scaffold]: react-leaflet pinned to 4.2.1 (v5 requires React 19, project is React 18)
 - [Phase 01-map-scaffold]: MapComponent kept separate from page to enable ssr:false dynamic import boundary
 - [Phase 01-map-scaffold]: Mapa sidebar entry placed between Relatorios and Configuracoes to group analytical tools
+- [Phase 02-geocoding-infrastructure P01]: No new npm packages — Node 24 built-in fetch + process.loadEnvFile + existing pg cover all geocoding needs
+- [Phase 02-geocoding-infrastructure P01]: NUMERIC type for lat/lng columns (avoids DOUBLE PRECISION floating-point edge cases)
+- [Phase 02-geocoding-infrastructure P01]: geocodeAddress() is rate-limit-free by design — backfill controls timing via createThrottle(1000ms)
+- [Phase 02-geocoding-infrastructure P01]: address normalization strips after first comma (split(',')[0].trim()) — complement confuses Nominatim structured query
 
 ### Pending Todos
 
@@ -74,11 +79,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 2: Verificar taxa de match do Nominatim para endereços reais de crm_orders antes de escrever o backfill (testar 5-10 endereços reais). Se abaixo de ~60%, ajustar normalização.
+- Phase 2 (resolved): backfill script logs final match rate — if below 60% after running, add normalization rules to geocode.js normalizeAddress()
 - Phase 3: Verificar compatibilidade de versão do leaflet.heat (0.2.0) com a versão do Leaflet instalada antes de começar a implementação do HeatmapLayer.
 
 ## Session Continuity
 
-Last session: 2026-03-18T16:47:38.005Z
-Stopped at: Completed 01-map-scaffold/01-01-PLAN.md (all 3 tasks complete, human-verify approved)
+Last session: 2026-03-18T17:09:00.000Z
+Stopped at: Completed 02-geocoding-infrastructure/02-01-PLAN.md (all 2 tasks complete)
 Resume file: None
