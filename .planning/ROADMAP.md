@@ -39,7 +39,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — DB migration (lat, lng, geocoded_at), geocode.js library, backfill script
-- [ ] 02-02-PLAN.md — GET /api/dashboard/mapa route, MapComponent Marker pins, mapa page data wiring + failed-geocode count
+- [x] 02-02-PLAN.md — GET /api/dashboard/mapa route, MapComponent Marker pins, mapa page data wiring + failed-geocode count
 
 ### Phase 3: Heatmap and Filters
 **Goal**: Camada de heatmap com densidade de atendimentos e filtro por período tornam o mapa analiticamente útil
@@ -49,10 +49,10 @@ Plans:
   1. Usuário vê uma camada de calor sobre o mapa mostrando concentração de atendimentos por área
   2. Usuário seleciona "últimos 7 dias", "30 dias" ou "90 dias" e os pins e heatmap atualizam sem o mapa reiniciar (zoom/pan preservado)
   3. Trocar o filtro de período não causa flash de mapa em branco nem reset de posição
-**Plans**: TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 03-01: Integrar leaflet.heat via useMap() hook com lifecycle correto (useRef + add/remove layer), HeatmapLayer component, botões de filtro por período com estado no page component, atualização de dados via refetch sem remount do MapContainer
+- [ ] 03-01-PLAN.md — Install leaflet.heat, create HeatmapLayer component, add period filter + layer toggles to map page
 
 ## Progress
 
