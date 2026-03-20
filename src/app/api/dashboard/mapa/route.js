@@ -1,20 +1,21 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
-// GET /api/dashboard/mapa
-// Returns geocoded order pins plus counts of orders with/without coordinates
-export async function GET() {
+export async function GET(request) {
   try {
-    // Fetch pins for orders that have been geocoded and are in active statuses
+    const { searchParams } = new URL(request.url)
+    const rawDays = parseInt(searchParams.get('days'), 10)
+    const days = [7, 30, 90].includes(rawDays) ? rawDays : 30
+
     const pinsResult = await query(`
       SELECT id, lat, lng, status, address, scheduled_date
       FROM crm_orders
       WHERE lat IS NOT NULL
         AND status IN ('concluido', 'agendado', 'confirmado', 'diarista_atribuida', 'em_andamento')
+        AND scheduled_date >= NOW() - INTERVAL '${days} days'
       ORDER BY scheduled_date DESC
     `)
 
-    // Count orders with and without coordinates
     const countsResult = await query(`
       SELECT
         count(*) FILTER (WHERE lat IS NOT NULL) as with_coords,
