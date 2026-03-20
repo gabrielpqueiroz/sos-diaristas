@@ -3,6 +3,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
+import HeatmapLayer from './HeatmapLayer'
 
 // Fix broken default marker icons in webpack/Next.js bundling
 // Must run before any L.marker() or <Marker> is used
@@ -17,7 +18,7 @@ L.Icon.Default.mergeOptions({
 const FOZ_CENTER = [-25.5163, -54.5854]
 const DEFAULT_ZOOM = 13
 
-export default function MapComponent({ pins = [] }) {
+export default function MapComponent({ pins = [], heatPoints = [] }) {
   return (
     <MapContainer
       center={FOZ_CENTER}
@@ -31,6 +32,7 @@ export default function MapComponent({ pins = [] }) {
         subdomains="abcd"
         maxZoom={20}
       />
+      <HeatmapLayer points={heatPoints} />
       {pins.map((pin) => (
         <Marker key={pin.id} position={[pin.lat, pin.lng]}>
           <Popup>
