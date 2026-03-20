@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-geocoding-infrastructure/02-02-PLAN.md (all 3 tasks, checkpoint approved)
-last_updated: "2026-03-18T17:26:31.312Z"
+stopped_at: Completed 03-heatmap-and-filters/03-01-PLAN.md (2 auto tasks done, awaiting checkpoint human-verify Task 3)
+last_updated: "2026-03-20T18:08:41.454Z"
 last_activity: "2026-03-18 — Phase 2 Plan 01 complete: DB migration + geocodeAddress() + backfill script"
 progress:
   total_phases: 3
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
+  completed_phases: 3
+  total_plans: 4
+  completed_plans: 4
   percent: 67
 ---
 
@@ -54,6 +54,7 @@ Progress: [████████░░] 67%
 | Phase 01-map-scaffold P01 | 15min | 3 tasks | 5 files |
 | Phase 02-geocoding-infrastructure P01 | 10min | 2 tasks | 3 files |
 | Phase 02-geocoding-infrastructure P02 | 3min | 2 tasks | 3 files |
+| Phase 03-heatmap-and-filters P01 | 15min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,7 @@ Recent decisions affecting current work:
 - [Phase 02-geocoding-infrastructure P01]: address normalization strips after first comma (split(',')[0].trim()) — complement confuses Nominatim structured query
 - [Phase 02-geocoding-infrastructure]: Popup text uses dark color #1a1a2e because Leaflet popup has white background regardless of page theme
 - [Phase 02-geocoding-infrastructure]: Pins filtered to active statuses (concluido, agendado, confirmado, diarista_atribuida, em_andamento) — pendente excluded from map
+- [Phase 03-heatmap-and-filters]: leaflet.heat import order: default L import before side-effect import; no key prop on MapComponent to prevent MapContainer remount; export const dynamic = force-dynamic for API routes reading request.url
 
 ### Pending Todos
 
@@ -87,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-18T17:26:31.308Z
-Stopped at: Completed 02-geocoding-infrastructure/02-02-PLAN.md (all 3 tasks, checkpoint approved)
+Last session: 2026-03-20T18:08:41.452Z
+Stopped at: Completed 03-heatmap-and-filters/03-01-PLAN.md (2 auto tasks done, awaiting checkpoint human-verify Task 3)
 Resume file: None

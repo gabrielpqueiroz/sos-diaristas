@@ -8,7 +8,7 @@ Tres fases constroem a feature de baixo para cima: primeiro o mapa renderiza cor
 
 - [x] **Phase 1: Map Scaffold** - Mapa de Foz do Iguaçu funcionando no dashboard com dados estáticos e entrada na sidebar (completed 2026-03-18)
 - [x] **Phase 2: Geocoding Infrastructure** - Coordenadas lat/lng cacheadas no banco, backfill de pedidos históricos e pins reais no mapa (completed 2026-03-18)
-- [ ] **Phase 3: Heatmap and Filters** - Camada de calor, filtro por período (7/30/90 dias) e feature completa para v1
+- [x] **Phase 3: Heatmap and Filters** - Camada de calor, filtro por período (7/30/90 dias) e feature completa para v1 (completed 2026-03-20)
 
 ## Phase Details
 
@@ -49,7 +49,7 @@ Plans:
   1. Usuário vê uma camada de calor sobre o mapa mostrando concentração de atendimentos por área
   2. Usuário seleciona "últimos 7 dias", "30 dias" ou "90 dias" e os pins e heatmap atualizam sem o mapa reiniciar (zoom/pan preservado)
   3. Trocar o filtro de período não causa flash de mapa em branco nem reset de posição
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 03-01-PLAN.md — Install leaflet.heat, create HeatmapLayer component, add period filter + layer toggles to map page
@@ -60,4 +60,4 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Map Scaffold | 1/1 | Complete   | 2026-03-18 |
 | 2. Geocoding Infrastructure | 2/2 | Complete   | 2026-03-18 |
-| 3. Heatmap and Filters | 0/1 | Not started | - |
+| 3. Heatmap and Filters | 1/1 | Complete   | 2026-03-20 |
