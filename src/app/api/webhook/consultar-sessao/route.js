@@ -39,16 +39,6 @@ export async function GET(request) {
       [c.id]
     )
 
-    // Buscar últimas mensagens do chat (n8n)
-    const chatHistory = await query(
-      `SELECT message, type, created_at
-       FROM n8n_chat_histories
-       WHERE session_id = $1
-       ORDER BY created_at DESC
-       LIMIT 20`,
-      [sessionId]
-    )
-
     return NextResponse.json({
       found: true,
       contact: {
@@ -76,11 +66,6 @@ export async function GET(request) {
         value: o.value,
         payment_status: o.payment_status,
         notes: o.notes,
-      })),
-      chat_history: chatHistory.rows.map(h => ({
-        message: h.message,
-        type: h.type,
-        created_at: h.created_at,
       })),
     })
   } catch (error) {
