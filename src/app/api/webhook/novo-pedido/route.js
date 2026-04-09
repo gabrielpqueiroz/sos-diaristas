@@ -45,7 +45,31 @@ export async function POST(request) {
       contactId = newContact.rows[0].id
     }
 
-    // 2. Criar o pedido
+    // 2. Anti-duplicidade: verificar se já existe pedido para mesmo telefone + data
+    if (scheduled_date) {
+      const existing = await query(
+        `SELECT id, service_type, scheduled_time, value, status
+         FROM crm_orders
+         WHERE contact_id = $1
+           AND scheduled_date = $2
+           AND status NOT IN ('cancelado')
+         LIMIT 1`,
+        [contactId, scheduled_date]
+      )
+
+      if (existing.rows.length > 0) {
+        return NextResponse.json({
+          ok: true,
+          duplicate: true,
+          message: 'Pedido já existe para esta data',
+          order_id: existing.rows[0].id,
+          contact_id: contactId,
+          existing_order: existing.rows[0],
+        })
+      }
+    }
+
+    // 3. Criar o pedido
     const orderResult = await query(
       `INSERT INTO crm_orders (contact_id, session_id, service_type, status, scheduled_date, scheduled_time, address, value, notes)
        VALUES ($1, $2, $3, 'agendado', $4, $5, $6, $7, $8)
@@ -53,7 +77,7 @@ export async function POST(request) {
       [contactId, phone, service_type || 'Limpeza', scheduled_date || null, scheduled_time || null, address || null, value || null, notes || null]
     )
 
-    // 3. Atualizar stats do contato
+    // 4. Atualizar stats do contato
     await query(`
       UPDATE crm_contacts SET
         status = 'agendado',
@@ -62,7 +86,7 @@ export async function POST(request) {
       WHERE id = $1
     `, [contactId])
 
-    // 4. Se veio endereço, salvar no contato
+    // 5. Se veio endereço, salvar no contato
     if (address) {
       await query(
         'UPDATE crm_contacts SET address = $2, updated_at = now() WHERE id = $1 AND (address IS NULL OR address = \'\')',
