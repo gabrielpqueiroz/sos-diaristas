@@ -1,8 +1,36 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/lib/db'
 
+function formatDate(date) {
+  if (!date) return null
+  const d = new Date(date)
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`
+}
+
+function buildResumo(contact, lastOrder) {
+  const nome = contact.name || 'sem nome cadastrado'
+  const totalOrders = contact.total_orders || 0
+  const endereco = contact.address || (lastOrder && lastOrder.address) || null
+
+  if (totalOrders > 0) {
+    const tipo = contact.is_recurring ? 'Cliente recorrente' : 'Cliente'
+    let resumo = `${tipo}. Nome: ${nome}. `
+    resumo += endereco ? `Endereço: ${endereco}. ` : 'Sem endereço cadastrado. '
+    resumo += `Já fez ${totalOrders} pedido${totalOrders > 1 ? 's' : ''}. `
+    if (lastOrder) {
+      resumo += `Último serviço: ${lastOrder.service_type || 'Limpeza'} em ${formatDate(lastOrder.scheduled_date)}.`
+    }
+    return resumo
+  }
+
+  let resumo = `Lead existente. Nome: ${nome}. Ainda não fez nenhum pedido. `
+  resumo += endereco ? `Endereço: ${endereco}.` : 'Sem endereço cadastrado.'
+  return resumo
+}
+
 // GET /api/webhook/consultar-sessao?session_id=45998300456
-// Chamado pelo n8n para buscar dados completos do cliente por session_id
+// Chamado pelo n8n para buscar dados do cliente por session_id
+// Retorna resumo amigável para prompt de IA
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url)
@@ -12,7 +40,6 @@ export async function GET(request) {
       return NextResponse.json({ error: 'session_id obrigatório' }, { status: 400 })
     }
 
-    // Buscar contato pelo session_id
     const contact = await query(
       `SELECT id, session_id, name, phone, address, neighborhood, city,
               status, is_recurring, total_orders, total_revenue, last_contact_at, created_at
@@ -23,24 +50,31 @@ export async function GET(request) {
     )
 
     if (contact.rows.length === 0) {
-      return NextResponse.json({ found: false, message: 'Cliente não encontrado no CRM' })
+      return NextResponse.json({
+        found: false,
+        resumo: 'Cliente novo, primeiro contato. Nenhum dado cadastrado ainda.',
+        contact: null,
+      })
     }
 
     const c = contact.rows[0]
 
-    // Buscar pedidos do cliente
-    const orders = await query(
-      `SELECT id, service_type, status, scheduled_date, scheduled_time,
-              address, value, payment_status, notes, created_at
+    // Buscar último pedido para o resumo
+    const lastOrderResult = await query(
+      `SELECT service_type, scheduled_date, address
        FROM crm_orders
        WHERE contact_id = $1
        ORDER BY created_at DESC
-       LIMIT 10`,
+       LIMIT 1`,
       [c.id]
     )
+    const lastOrder = lastOrderResult.rows[0] || null
+
+    const resumo = buildResumo(c, lastOrder)
 
     return NextResponse.json({
       found: true,
+      resumo,
       contact: {
         id: c.id,
         session_id: c.session_id,
@@ -56,17 +90,6 @@ export async function GET(request) {
         last_contact_at: c.last_contact_at,
         created_at: c.created_at,
       },
-      orders: orders.rows.map(o => ({
-        id: o.id,
-        service_type: o.service_type,
-        status: o.status,
-        scheduled_date: o.scheduled_date,
-        scheduled_time: o.scheduled_time,
-        address: o.address,
-        value: o.value,
-        payment_status: o.payment_status,
-        notes: o.notes,
-      })),
     })
   } catch (error) {
     console.error('Error consulting session:', error.message, error.stack)

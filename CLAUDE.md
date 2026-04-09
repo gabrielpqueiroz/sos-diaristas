@@ -72,12 +72,22 @@ src/app/
 ## Database Schema (PostgreSQL)
 
 ```sql
-crm_contacts    — id, session_id, name, phone, email, address, neighborhood, city,
-                  status, is_recurring, total_orders, total_revenue, last_contact_at
-crm_orders      — id, contact_id, session_id, service_type, status, scheduled_date,
-                  scheduled_time, address, diarista_id, value, payment_status, notes
-crm_diaristas   — id, name, phone, specialties, status, notes
-n8n_chat_histories — id, session_id, message (JSONB), type (human|ai)
+crm_contacts    — id UUID, session_id, phone, name, address, neighborhood, city, ddd,
+                  status, is_recurring, first_contact_at, last_contact_at,
+                  total_orders INT, total_revenue NUMERIC, tags ARRAY, notes,
+                  follow_up_date DATE, follow_up_note, created_at, updated_at
+crm_orders      — id UUID, contact_id UUID FK, session_id, service_type, status,
+                  scheduled_date DATE, scheduled_time TIME, address, diarista_id UUID FK,
+                  value NUMERIC, payment_status, notes, lat NUMERIC, lng NUMERIC,
+                  geocoded_at, created_at, updated_at
+crm_diaristas   — id UUID, name, phone, status, specialties ARRAY, notes, created_at
+crm_followups   — id UUID, contact_id UUID FK, type, status, message_template,
+                  scheduled_for, sent_at, response_at, notes, created_at
+crm_daily_reports — id UUID, report_date DATE, total_conversations, new_contacts,
+                  returning_contacts, total_messages, orders_created, orders_completed,
+                  revenue NUMERIC, avg_response_quality NUMERIC, ai_summary, ai_insights,
+                  details JSONB, created_at
+n8n_chat_histories — id SERIAL, session_id, message JSONB, created_at
 ```
 
 ### Status de pedidos
