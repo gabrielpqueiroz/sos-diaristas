@@ -14,7 +14,7 @@ export async function GET(request) {
 
     // Buscar contato pelo session_id
     const contact = await query(
-      `SELECT id, session_id, name, phone, email, address, neighborhood, city,
+      `SELECT id, session_id, name, phone, address, neighborhood, city,
               status, is_recurring, total_orders, total_revenue, last_contact_at, created_at
        FROM crm_contacts
        WHERE session_id = $1
@@ -56,7 +56,6 @@ export async function GET(request) {
         session_id: c.session_id,
         name: c.name,
         phone: c.phone || c.session_id,
-        email: c.email,
         address: c.address,
         neighborhood: c.neighborhood,
         city: c.city,
