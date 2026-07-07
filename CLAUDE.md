@@ -9,7 +9,7 @@ Contém landing page pública + dashboard admin CRM, tudo no mesmo projeto.
 
 - **Produção:** `sistemasos.queirozautomacoes.com.br` (Vercel)
 - **GitHub:** `gabrielpqueiroz/sos-diaristas`
-- **Banco:** PostgreSQL em VPS (`31.97.174.85`)
+- **Banco:** PostgreSQL em VPS (`178.104.235.4`) — VPS anterior (`31.97.174.85`) expirou em jul/2026; dados antigos do CRM foram perdidos, schema recriado do zero
 - **Automação:** n8n (webhooks para criar pedidos e atualizar contatos)
 
 ## Commands
